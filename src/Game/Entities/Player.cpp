@@ -82,7 +82,7 @@ void Player::render(){
         ofDrawCircle(ofGetWidth()/2 + 25*i +200, 50, 10);
     }
     ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-200, 50);
-}
+};
 
 void Player::keyPressed(int key){
     switch(key){
@@ -102,7 +102,7 @@ void Player::keyPressed(int key){
             die();
             break;
         case 'm':
-            health++;
+            if (this->getHealth() < 3) { health++; }
             break;
     }
 }
