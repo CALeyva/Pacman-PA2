@@ -11,6 +11,10 @@ void GameState::tick() {
 			music.play();
 	}
 	map->tick();
+	if (map->getPlayer()->getScore() >= 4400) {
+		setFinished(true);
+		setNextState("WinState");
+	}
 	if(map->getPlayer()->getHealth() == 0){
 		setFinished(true);
 		setNextState("over");
@@ -24,6 +28,10 @@ void GameState::render() {
 }
 
 void GameState::keyPressed(int key){
+	if (key == 'y'){
+        setFinished(true);
+		setNextState("WinState");
+    }
 	map->keyPressed(key);
 }
 
