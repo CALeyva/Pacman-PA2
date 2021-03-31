@@ -43,6 +43,7 @@ Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(
     
 }
 void Player::tick(){
+    if(powerupActive){ powerTick(); }
     canMove = true;
     checkCollisions();
     if(canMove){
@@ -82,6 +83,16 @@ void Player::render(){
         ofDrawCircle(ofGetWidth()/2 + 25*i +200, 50, 10);
     }
     ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-200, 50);
+    
+    if(score < 1500){
+        ofDrawBitmapString("Powerup: loading " + to_string(1500 - score) + "/1500", ofGetWidth()/2-100, 50);
+    } else if(score >= 1500 && powerup){
+        ofDrawBitmapString("Powerup: ready", ofGetWidth()/2-100, 50);
+    } else if(powerupActive){
+        ofDrawBitmapString("Powerup: " + to_string(powerupCounter/30) + "." + to_string(powerupCounter%30) + " remaining", ofGetWidth()/2-100, 50);
+    } else if(used == true){
+        ofDrawBitmapString("Powerup: used", ofGetWidth()/2-50, 50);
+    }
 };
 
 void Player::keyPressed(int key){
@@ -103,6 +114,11 @@ void Player::keyPressed(int key){
             break;
         case 'm':
             if (this->getHealth() < 3) { health++; }
+            break;
+        case ' ':
+            if (this->powerup == true) {
+                activate();
+                }
             break;
     }
 }
@@ -164,11 +180,19 @@ void Player::checkCollisions(){
         if(collides(entity)){
             if(dynamic_cast<Dot*>(entity) || dynamic_cast<BigDot*>(entity)){
                 entity->remove = true;
-                score += 10;
+                if(powerupActive){
+                    score += 20;
+                } else {
+                    score += 10;
+                }
             }
             if(dynamic_cast<BigDot*>(entity)){
-                score +=10;
                 em->setKillable(true);
+                if(powerupActive){
+                    score += 20;
+                } else {
+                    score +=10;
+                }
             }
         }
     }
@@ -183,8 +207,7 @@ void Player::checkCollisions(){
             }
         }
     }
-
-    
+    if(score >= 1500 && used == false){ powerup = true; }
 }
 
 void Player::die(){

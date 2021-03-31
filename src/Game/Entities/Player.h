@@ -2,8 +2,9 @@
 #include "Animation.h"
 
 #include "EntityManager.h"
+#include "Powerup.h"
 
-class Player: public Entity{
+class Player: public Entity, Powerup {
 
     private:
         int spawnX, spawnY;
