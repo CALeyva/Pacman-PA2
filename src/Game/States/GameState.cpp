@@ -14,6 +14,7 @@ void GameState::tick() {
 	if (map->getPlayer()->getScore() >= 4400) {
 		setFinished(true);
 		setNextState("WinState");
+		finalScore = map->getPlayer()->getScore();
 	}
 	if(map->getPlayer()->getHealth() == 0){
 		setFinished(true);
@@ -31,6 +32,7 @@ void GameState::keyPressed(int key){
 	if (key == 'y'){
         setFinished(true);
 		setNextState("WinState");
+		finalScore = map->getPlayer()->getScore();
     }
 	map->keyPressed(key);
 }
