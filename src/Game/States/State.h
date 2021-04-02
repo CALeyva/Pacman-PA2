@@ -34,8 +34,17 @@ class State {
 			this->nextState = nextState;
 		}
 
+		void setWasPaused(bool paused){
+			this->wasPaused = paused;
+		}
+		
+		bool getWasPaused(){
+			return wasPaused;
+		}
+
 	private:
 		string nextState;
 		bool finished = false;
+		bool wasPaused = false;
 
 };

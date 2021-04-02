@@ -82,10 +82,10 @@ void Player::render(){
     for(unsigned int i=0; i<health; i++){
         ofDrawCircle(ofGetWidth()/2 + 25*i +200, 50, 10);
     }
-    ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-200, 50);
+    ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-250, 50);
     
     if(score < 1500){
-        ofDrawBitmapString("Powerup: loading " + to_string(1500 - score) + "/1500", ofGetWidth()/2-100, 50);
+        ofDrawBitmapString("Powerup: loading " + to_string(1500 - score) + "/1500", ofGetWidth()/2-125, 50);
     } else if(score >= 1500 && powerup){
         ofDrawBitmapString("Powerup: ready", ofGetWidth()/2-100, 50);
     } else if(powerupActive){
