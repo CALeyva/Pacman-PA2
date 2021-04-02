@@ -34,6 +34,11 @@ void GameState::keyPressed(int key){
 		setNextState("WinState");
 		finalScore = map->getPlayer()->getScore();
     }
+	if (key == 'p'){
+		setFinished(true);
+		setNextState("PauseState");
+		finalScore = map->getPlayer()->getScore();
+	}
 	map->keyPressed(key);
 }
 
@@ -48,7 +53,15 @@ void GameState::keyReleased(int key){
 void GameState::reset(){
 	setFinished(false);
 	setNextState("");
-	this->map = MapBuilder().createMap(mapImage);
+	if(getWasPaused() == false){
+		this->map = MapBuilder().createMap(mapImage);
+	} else {
+		setWasPaused(false);
+	}
+}
+
+void GameState::setScore(int sc){
+	score = sc;
 }
 
 int GameState::getFinalScore(){
