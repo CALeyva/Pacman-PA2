@@ -45,7 +45,7 @@ void EntityManager::tick(){
     }
 }
 
-void EntityManager::render(){
+void EntityManager::render(Entity* player){
     for(Entity* entity: entities){
         entity->render();
     }
@@ -53,7 +53,7 @@ void EntityManager::render(){
         BoundBlock->render();
     }
     for(Entity* ghost: ghosts){
-        ghost->render();
+        dynamic_cast<Ghost*>(ghost)->render(player);
     }
 }
 

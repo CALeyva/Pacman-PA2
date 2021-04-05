@@ -1,5 +1,7 @@
 #include "Ghost.h"
 #include "BoundBlock.h"
+#include "PeekABooGhost.h"
+#include <cmath>
 
 Ghost::Ghost(int x, int y, int width, int height, ofImage spriteSheet, EntityManager* em, string color): Entity(x, y, width, height){
     this->em = em;
@@ -62,11 +64,13 @@ void Ghost::tick(){
     }
 }
 
-void Ghost::render(){
-    if(killable){
-        killableAnim->getCurrentFrame().draw(x,y,width,height);
-    }else{
-        Entity::render();
+void Ghost::render(Entity* player){
+    if (!dynamic_cast<PeekABooGhost*>(this) || (dynamic_cast<PeekABooGhost*>(this) && (abs(player->getBounds().getX() - this->getBounds().getX()) >= 100 || abs(player->getBounds().getY() - this->getBounds().getY()) >= 100))) {
+        if(killable){
+            killableAnim->getCurrentFrame().draw(x,y,width,height);
+        }else {
+            Entity::render();
+        }
     }
 }
 

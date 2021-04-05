@@ -12,7 +12,7 @@ void Map::tick(){
 }
 void Map::render(){
     ofSetBackgroundColor(0, 0, 0);
-	entityManager->render();
+	entityManager->render(dynamic_cast<Entity*>(this->getPlayer()));
 	player->render();
 
 }

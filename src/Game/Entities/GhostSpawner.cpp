@@ -1,6 +1,7 @@
 #include "GhostSpawner.h"
 #include "Ghost.h"
 #include "RandomGhost.h"
+#include "PeekABooGhost.h"
 #include "Player.h"
 #include "Entity.h"
 #include "Dot.h"
@@ -31,11 +32,19 @@ void GhostSpawner::tick(Player* player){
             spawnCounter--;
         }
     }
-    if (player->getScore() == 500) { em->setSpawnRandom(true); }
+    if (player->getScore() == 500 && !spawnedRandom) { em->setSpawnRandom(true); }
     if (em->getSpawnRandom()) {
         em->setSpawnRandom(false);
+        this->spawnedRandom = true;
         spawnRandomGhost(player, colors[ofRandom(4)]);
     }
+    if (player->getScore() == 1000 && !spawnedPAB) { em->setSpawnPeekABoo(true); }
+    if (em->getSpawnPeekABoo()) {
+        em->setSpawnPeekABoo(false);
+        this->spawnedPAB = true;
+        spawnPeekABooGhost(player, colors[ofRandom(4)]);
+    }
+
 }
 void GhostSpawner::spawnGhost(string color){
     Ghost* g = new Ghost(x,y,width-2,height-2,sprite,em, color);
@@ -50,6 +59,11 @@ void GhostSpawner::spawnRandomGhost(Player* player, string color) {
     RandomGhost* rg = new RandomGhost(randomDot->getBounds().getX(),randomDot->getBounds().getY(),width-2,height-2,sprite,em, color);
     randomDot->remove = true;
     em->ghosts.push_back(rg);
+}
+
+void GhostSpawner::spawnPeekABooGhost(Player* player, string color) {
+    PeekABooGhost* pg = new PeekABooGhost(x,y,width-2,height-2,sprite,em, color);
+    em->ghosts.push_back(pg);
 }
 
 void GhostSpawner::keyPressed(int key){

@@ -1,13 +1,14 @@
 #pragma once
 #include "EntityManager.h"
 #include "Animation.h"
+#include "Player.h"
 
 class Ghost: public Entity{
     public:
         Ghost(int, int, int, int, ofImage, EntityManager*, string);
         ~Ghost();
         void tick();
-        void render();
+        void render(Entity* player);
         bool getKillable();
         void setKillable(bool);
     private:
