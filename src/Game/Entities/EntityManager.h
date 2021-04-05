@@ -12,8 +12,10 @@ public:
 	void tick();
 	void render();
 	void setKillable(bool);
-
+	void setSpawnRandom(bool b) {this->spawnRandom = b; };
+	bool getSpawnRandom() { return this->spawnRandom; };
 private:
 	bool killable = false;
 	int killableCounter;
+	bool spawnRandom = false;
 };

@@ -7,7 +7,7 @@ Map::Map(EntityManager* em){
 void Map::tick(){
 	entityManager->tick();
 	player->tick();
-	gs->tick();
+	gs->tick(this->getPlayer());
 
 }
 void Map::render(){
