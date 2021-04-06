@@ -11,7 +11,7 @@ void GameState::tick() {
 			music.play();
 	}
 	map->tick();
-	if (map->getPlayer()->getScore() >= 4400) {
+	if (!map->dotsLeft()) {
 		setFinished(true);
 		setNextState("WinState");
 		finalScore = map->getPlayer()->getScore();

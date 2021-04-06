@@ -1,4 +1,6 @@
 #include "Map.h"
+#include "Dot.h"
+#include "BigDot.h"
 
 Map::Map(EntityManager* em){
     entityManager = em;
@@ -45,6 +47,13 @@ Player* Map::getPlayer(){
 }
 void Map::setGhostSpawner(GhostSpawner* p){
     gs = p;
+}
+
+bool Map::dotsLeft() {
+	for (Entity* entity: this->entityManager->entities) {
+		if (dynamic_cast<Dot*>(entity) || dynamic_cast<BigDot*>(entity)) return true;
+	}
+	return false;
 }
 
 Map::~Map(){
