@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.h"
+#include "Leaderboard.h"
 
 class PauseState: public GameState {
     public:
@@ -7,6 +8,6 @@ class PauseState: public GameState {
         ~PauseState();
         void tick();
         void keyPressed(int key);
-        void render();
+        void render(Leaderboard *lb);
         void reset();
 };

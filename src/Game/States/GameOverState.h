@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Button.h"
 #include "Animation.h" 
+#include "Leaderboard.h"
 class GameOverState : public State {
 private:
 	ofImage img1;
@@ -13,7 +14,7 @@ public:
 	GameOverState();
 	~GameOverState();
 	void tick();
-	void render();
+	void render(Leaderboard *lb);
 	void keyPressed(int key);
 	void mousePressed(int x, int y, int button);
 	void reset();

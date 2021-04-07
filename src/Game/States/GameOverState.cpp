@@ -21,14 +21,13 @@ void GameOverState::tick() {
 
 	}
 }
-void GameOverState::render() {
+void GameOverState::render(Leaderboard *lb) {
 	ofDrawBitmapString("Score: " + to_string(score), ofGetWidth()/2, ofGetHeight()/2-300, 50);
 	ofSetBackgroundColor(0, 0, 0);
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
-
-
+	lb->render(-1);
 }
 
 void GameOverState::keyPressed(int key){

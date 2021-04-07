@@ -5,6 +5,7 @@
 void ofApp::setup(){
 	ofSetFrameRate(30);
 	ofSetWindowTitle("Java Game Box");
+	leaderboard = new Leaderboard();
 	//States
 	menuState = new MenuState();
 	gameState = new GameState();
@@ -46,8 +47,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	if (currentState != nullptr)
-		currentState->render();
+	if (currentState != nullptr) currentState->render(this->leaderboard);
 }
 
 //--------------------------------------------------------------

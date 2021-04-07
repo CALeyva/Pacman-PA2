@@ -1,13 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
+#include "Leaderboard.h"
 
 class State {
 	public:
 		State() {}
 		virtual void reset() = 0;
 		virtual void tick() = 0;
-		virtual void render() = 0;
+		virtual void render(Leaderboard *lb) = 0;
 		virtual void keyPressed(int key) = 0;
 		virtual void mousePressed(int x, int y, int button) = 0;
 
@@ -46,5 +47,4 @@ class State {
 		string nextState;
 		bool finished = false;
 		bool wasPaused = false;
-
 };

@@ -16,7 +16,6 @@ void Map::render(){
     ofSetBackgroundColor(0, 0, 0);
 	entityManager->render(dynamic_cast<Entity*>(this->getPlayer()));
 	player->render();
-
 }
 
 void Map::keyPressed(int key){
@@ -58,6 +57,6 @@ bool Map::dotsLeft() {
 
 Map::~Map(){
 	delete player;
-	delete  entityManager;
+	delete entityManager;
 	delete gs;
 }

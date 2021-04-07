@@ -18,17 +18,15 @@ void WinState::tick() {
 	if(startButton->wasPressed()){
 		setNextState("Game");
 		setFinished(true);
-
 	}
 }
-void WinState::render() {
+void WinState::render(Leaderboard *lb) {
 	ofDrawBitmapString("Score: " + to_string(score), ofGetWidth()/2, ofGetHeight()/2-300, 50);
 	ofSetBackgroundColor(0, 0, 0);
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
-
-
+	lb->render(-1);
 }
 
 void WinState::keyPressed(int key){

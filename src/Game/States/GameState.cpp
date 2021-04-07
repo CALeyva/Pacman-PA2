@@ -8,13 +8,14 @@ GameState::GameState() {
 }
 void GameState::tick() {
 	if(!music.isPlaying()){
-			music.play();
+		music.play();
 	}
 	map->tick();
 	if (!map->dotsLeft()) {
 		setFinished(true);
 		setNextState("WinState");
 		finalScore = map->getPlayer()->getScore();
+		leaderboard->addEntry("You", finalScore);
 	}
 	if(map->getPlayer()->getHealth() == 0){
 		setFinished(true);
@@ -22,9 +23,11 @@ void GameState::tick() {
 		map->getPlayer()->setHealth(3);
 		finalScore = map->getPlayer()->getScore();
 		map->getPlayer()->setScore(0);
+		leaderboard->addEntry("You", finalScore);
 	}
 }
-void GameState::render() {
+void GameState::render(Leaderboard *lb) {
+	this->leaderboard = lb;
 	map->render();
 }
 
@@ -33,6 +36,7 @@ void GameState::keyPressed(int key){
         setFinished(true);
 		setNextState("WinState");
 		finalScore = map->getPlayer()->getScore();
+		leaderboard->addEntry("You", finalScore);
     }
 	if (key == 'p'){
 		setFinished(true);

@@ -3,6 +3,8 @@
 #include "State.h"
 #include "Button.h"
 #include "Animation.h" 
+#include "Leaderboard.h"
+
 class WinState : public State {
 private:
 	ofImage img1;
@@ -13,7 +15,7 @@ public:
 	WinState();
 	~WinState();
 	void tick();
-	void render();
+	void render(Leaderboard *lb);
 	void keyPressed(int key);
 	void mousePressed(int x, int y, int button);
 	void reset();

@@ -10,8 +10,9 @@ void PauseState::tick() {
 	}
 }
 
-void PauseState::render() {
+void PauseState::render(Leaderboard *lb) {
     ofDrawBitmapString("Score: " + to_string(score), ofGetWidth()/2, ofGetHeight()/2-300, 50);
+    lb->render(-1);
 }
 
 void PauseState::keyPressed(int key) {

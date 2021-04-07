@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Player.h"
 #include "MapBuilder.h"
+#include "Leaderboard.h"
 
 class GameState: public State{
     public: 
@@ -9,7 +10,7 @@ class GameState: public State{
 		~GameState();
 		void reset();
 		void tick();
-		void render();
+		void render(Leaderboard *lb);
 		void keyPressed(int key);
 		void mousePressed(int x, int y, int button);
 		void keyReleased(int key);
@@ -19,7 +20,7 @@ class GameState: public State{
 		ofSoundPlayer music;
 		Map* map;
 		int finalScore=0;
-	
+		Leaderboard *leaderboard;
 	private:
 		ofImage mapImage;
 

@@ -21,14 +21,13 @@ void MenuState::tick() {
 
 	}
 }
-void MenuState::render() {
+void MenuState::render(Leaderboard *lb) {
 	ofDrawBitmapString("Pacman Project", ofGetWidth()/2, ofGetHeight()/2-300, 50);
 	ofSetBackgroundColor(0, 0, 0);
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
-
-
+	lb->render(-1);
 }
 
 void MenuState::keyPressed(int key){
