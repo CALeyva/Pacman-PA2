@@ -26,19 +26,30 @@ void GhostSpawner::tick(Player* player){
 
     if(em->ghosts.size()<4){
         if(spawnCounter == 0){
-            spawnGhost(colors[ofRandom(4)]);
+            int selection = ofRandom(2);
+            if (selection == 0 && player->getScore() >= 500) {
+                if (!spawnedRandom) {
+                    spawnRandomGhost(player, colors[ofRandom(4)]);
+                }
+            } else if (selection == 1 && player->getScore() >= 1000) {
+                if (!spawnedPAB) {
+                    spawnPeekABooGhost(player, colors[ofRandom(4)]);
+                }
+            } else {
+                spawnGhost(colors[ofRandom(4)]);
+            }
             spawnCounter = 30*5;
         }else{
             spawnCounter--;
         }
     }
-    if (player->getScore() == 500 && !spawnedRandom) { em->setSpawnRandom(true); }
+    if (player->getScore() >= 500 && !spawnedRandom) { em->setSpawnRandom(true); }
     if (em->getSpawnRandom()) {
         em->setSpawnRandom(false);
         this->spawnedRandom = true;
         spawnRandomGhost(player, colors[ofRandom(4)]);
     }
-    if (player->getScore() == 1000 && !spawnedPAB) { em->setSpawnPeekABoo(true); }
+    if (player->getScore() >= 1000 && !spawnedPAB) { em->setSpawnPeekABoo(true); }
     if (em->getSpawnPeekABoo()) {
         em->setSpawnPeekABoo(false);
         this->spawnedPAB = true;

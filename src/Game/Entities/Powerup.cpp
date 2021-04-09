@@ -1,19 +1,18 @@
 #include "Powerup.h"
 
 void Powerup::activate() {
-    if(used == false){
-        powerupActive = true;
-        powerup = false;
-        used = true;
-        powerupCounter = 30*10;
+    if(getPowerupAvailable() == true) {
+        setPowerupActive(true);
+        setPowerupAvailable(false);
     }
 }
 
 void Powerup::powerTick() {
-    if(powerupActive){
-        powerupCounter--;
-        if(powerupCounter == 0){
-            powerupActive = false;
+    if(getPowerupActive()){
+        setPowerupCounter(getPowerupCounter()-1);
+        if(getPowerupCounter() == 0){
+            setPowerupActive(false);
+            setUsed(true);
         }
     }
 }

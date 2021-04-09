@@ -1,9 +1,10 @@
 #include "Player.h"
-#include "EntityManager.h"
+// #include "EntityManager.h"
 #include "Dot.h"
 #include "BigDot.h"
-#include "Ghost.h"
+// #include "Ghost.h"
 #include "RandomGhost.h"
+#include "PeekABooGhost.h"
 
 Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(x, y, width, height){
     spawnX = x;
@@ -41,25 +42,37 @@ Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(
     walkRight = new Animation(1,rightAnimframes);
 
     this->em = em;
-    
+
+    rpu = new RandomPowerup();
+    dpu = new DoublePowerup();
+    ppu = new PeekABooPowerup();
+    this->setPower(rpu);
 }
+
 void Player::tick(){
-    if(powerupActive){ powerTick(); }
+    if(this->getRPU()->getPowerupActive()) { 
+        this->spawnRandom(this);
+        this->getRPU()->powerTick();
+    } else if (this->getDPU()->getPowerupActive()) {
+        this->getDPU()->powerTick();
+    } else if (this->getPPU()->getPowerupActive()) {
+        this->getPPU()->powerTick();
+    }
     canMove = true;
     checkCollisions();
     if(canMove){
         if(facing == UP){
             y-= speed;
-            walkUp->tick();
+            walkUp->tick();          
         }else if(facing == DOWN){
             y+=speed;
-            walkDown->tick();
+            walkDown->tick();     
         }else if(facing == LEFT){
             x-=speed;
-            walkLeft->tick();
+            walkLeft->tick();     
         }else if(facing == RIGHT){
             x+=speed;
-            walkRight->tick();
+            walkRight->tick();      
         }
     }
 }
@@ -67,33 +80,38 @@ void Player::tick(){
 void Player::render(){
     ofSetColor(256,256,256);
     // ofDrawRectangle(getBounds());
-    if(facing == UP){
-        walkUp->getCurrentFrame().draw(x, y, width, height);
-        
-    }else if(facing == DOWN){
-        walkDown->getCurrentFrame().draw(x, y, width, height);
-    }else if(facing == LEFT){
-        walkLeft->getCurrentFrame().draw(x, y, width, height);
-    }else if(facing == RIGHT){
-        walkRight->getCurrentFrame().draw(x, y, width, height);
+    if(!this->getPPU()->getPowerupActive()) {
+        if(facing == UP){
+            walkUp->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == DOWN){
+            walkDown->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == LEFT){
+            walkLeft->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == RIGHT){
+            walkRight->getCurrentFrame().draw(x, y, width, height);
+        }
     }
+    
     ofSetColor(256, 0, 0);
     ofDrawBitmapString("Health: ", ofGetWidth()/2 + 100, 50);
 
-    for(unsigned int i=0; i<health; i++){
+    for(int i=0; i<health; i++){
         ofDrawCircle(ofGetWidth()/2 + 25*i +200, 50, 10);
     }
     ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-250, 50);
-    
-    if(score < 1500){
-        ofDrawBitmapString("Powerup: loading " + to_string(1500 - score) + "/1500", ofGetWidth()/2-125, 50);
-    } else if(score >= 1500 && powerup){
-        ofDrawBitmapString("Powerup: ready", ofGetWidth()/2-100, 50);
-    } else if(powerupActive){
-        ofDrawBitmapString("Powerup: " + to_string(powerupCounter/30) + "." + to_string(powerupCounter%30) + " remaining", ofGetWidth()/2-100, 50);
-    } else if(used == true){
-        ofDrawBitmapString("Powerup: used", ofGetWidth()/2-50, 50);
+
+    if(this->getPowerAvailable() == false) {
+        ofDrawBitmapString("Powerup: empty", ofGetWidth()/2-125, 50);
+    } else {
+        if (this->getPower()->getUsed() == false && this->getPower()->getPowerupActive() == false) {
+            ofDrawBitmapString(this->getPower()->getName() + ": ready", ofGetWidth()/2-125, 50);
+        } else if (this->getPower()->getPowerupActive() == true) {
+            ofDrawBitmapString(this->getPower()->getName() + ": " + to_string(this->getPower()->getPowerupCounter()/30) + "." + to_string(this->getPower()->getPowerupCounter()%30) + " remaining", ofGetWidth()/2-125, 50);
+        } else {
+            ofDrawBitmapString(this->getPower()->getName() + ": used", ofGetWidth()/2-125, 50);
+        }
     }
+        
 };
 
 void Player::keyPressed(int key){
@@ -117,9 +135,11 @@ void Player::keyPressed(int key){
             if (this->getHealth() < 3) { health++; }
             break;
         case ' ':
-            if (this->powerup == true) {
-                activate();
+            if(this->getPowerAvailable()) {
+                if(this->getPower()->getUsed() == false) {
+                    this->getPower()->activate();
                 }
+            }
             break;
     }
 }
@@ -129,6 +149,7 @@ void Player::keyReleased(int key){
         walking = false;
     }
 }
+
 void Player::mousePressed(int x, int y, int button){
 
 }
@@ -181,7 +202,7 @@ void Player::checkCollisions(){
         if(collides(entity)){
             if(dynamic_cast<Dot*>(entity) || dynamic_cast<BigDot*>(entity)){
                 entity->remove = true;
-                if(powerupActive){
+                if(this->getDPU()->getPowerupActive()){
                     score += 20;
                 } else {
                     score += 10;
@@ -189,7 +210,7 @@ void Player::checkCollisions(){
             }
             if(dynamic_cast<BigDot*>(entity)){
                 em->setKillable(true);
-                if(powerupActive){
+                if(this->getDPU()->getPowerupActive()){
                     score += 20;
                 } else {
                     score +=10;
@@ -204,14 +225,37 @@ void Player::checkCollisions(){
                 ghost->remove = true;
                 if (dynamic_cast<RandomGhost*>(entity)) {
                     em->setSpawnRandom(true);
+                    if (this->getRPU()->getUsed() == false) {
+                        this->setPower(rpu);
+                        this->getRPU()->setPowerupAvailable(true);
+                    }
+                } else if (dynamic_cast<PeekABooGhost*>(entity)) {
+                    em->setSpawnPeekABoo(true);
+                    if (this->getPPU()->getUsed() == false) {
+                        this->setPower(ppu);
+                        this->getPPU()->setPowerupAvailable(true);
+                    }
                 }
             }else{
                 die();
-
             }
         }
     }
-    if(score >= 1500 && used == false){ powerup = true; }
+    if(score >= 1500 && this->getDPU()->getUsed() == false){
+        this->setPower(dpu);
+        this->getDPU()->setPowerupAvailable(true);
+    }
+}
+
+void Player::spawnRandom(Player* player) {
+    // Player* player = dynamic_cast<Player*>(p);
+    Entity* randomDot = player->getEm()->entities[rand() % player->getEm()->entities.size()];
+    // while (!dynamic_cast<Dot*>(randomDot) || abs(player->getBounds().getX() - randomDot->getBounds().getX()) <= 100 || abs(player->getBounds().getY() - randomDot->getBounds().getY()) <= 100) {
+    //     randomDot = player->getEm()->entities[rand() % player->getEm()->entities.size()];
+    // }
+    player->setX(randomDot->getBounds().getX());
+    player->setY(randomDot->getBounds().getY());
+    randomDot->remove = true;
 }
 
 void Player::die(){
@@ -219,6 +263,37 @@ void Player::die(){
     x = spawnX;
     y = spawnY;
 
+}
+
+void Player::setPower(Powerup* power) {
+    this->poweru = power;
+}
+
+Powerup* Player::getPower() {
+    return this->poweru;
+}
+
+bool Player::getPowerAvailable() {
+    if (this->getRPU()->getPowerupAvailable() == true) {
+        this->setPower(rpu);
+        return true;
+    } else if (this->getDPU()->getPowerupAvailable() == true) {
+        this->setPower(dpu);
+        return true;
+    } else if (this->getPPU()->getPowerupAvailable() == true) {
+        this->setPower(ppu);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void Player::setX(int setX) {
+    x = setX;
+}
+
+void Player::setY(int setY) {
+    y = setY;
 }
 
 Player::~Player(){
