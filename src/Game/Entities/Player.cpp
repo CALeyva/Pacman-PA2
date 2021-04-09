@@ -1,8 +1,6 @@
 #include "Player.h"
-// #include "EntityManager.h"
 #include "Dot.h"
 #include "BigDot.h"
-// #include "Ghost.h"
 #include "RandomGhost.h"
 #include "PeekABooGhost.h"
 
@@ -43,19 +41,19 @@ Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(
 
     this->em = em;
 
-    rpu = new RandomPowerup();
+    rpu = new RandomPowerup();                                  // Creates New Instances of Powerups
     dpu = new DoublePowerup();
     ppu = new PeekABooPowerup();
     this->setPower(rpu);
 }
 
 void Player::tick(){
-    if(this->getRPU()->getPowerupActive()) { 
-        this->spawnRandom(this);
+    if(this->getRPU()->getPowerupActive()) {                    // If RPU is active, ticks it
+        this->spawnRandom(this);                                // RPU causes pacman to spawn randomly
         this->getRPU()->powerTick();
-    } else if (this->getDPU()->getPowerupActive()) {
+    } else if (this->getDPU()->getPowerupActive()) {            // If DPU is active, ticks it
         this->getDPU()->powerTick();
-    } else if (this->getPPU()->getPowerupActive()) {
+    } else if (this->getPPU()->getPowerupActive()) {            // If PPU is active, ticks it
         this->getPPU()->powerTick();
     }
     canMove = true;
@@ -80,7 +78,7 @@ void Player::tick(){
 void Player::render(){
     ofSetColor(256,256,256);
     // ofDrawRectangle(getBounds());
-    if(!this->getPPU()->getPowerupActive()) {
+    if(!this->getPPU()->getPowerupActive()) {                               // If PPU is active, Pacman becomes invisible, not drawn in the render method
         if(facing == UP){
             walkUp->getCurrentFrame().draw(x, y, width, height);
         }else if(facing == DOWN){
@@ -100,14 +98,14 @@ void Player::render(){
     }
     ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-250, 50);
 
-    if(this->getPowerAvailable() == false) {
+    if(this->getPowerAvailable() == false) {                                                                // If no powers are available, displays that powerups are empty
         ofDrawBitmapString("Powerup: empty", ofGetWidth()/2-125, 50);
     } else {
-        if (this->getPower()->getUsed() == false && this->getPower()->getPowerupActive() == false) {
+        if (this->getPower()->getUsed() == false && this->getPower()->getPowerupActive() == false) {        // If powerup is available, unused, and not yet active, displays that it is ready to use
             ofDrawBitmapString(this->getPower()->getName() + ": ready", ofGetWidth()/2-125, 50);
-        } else if (this->getPower()->getPowerupActive() == true) {
+        } else if (this->getPower()->getPowerupActive() == true) {                                          // If powerup is active, displays active powerup and duration left
             ofDrawBitmapString(this->getPower()->getName() + ": " + to_string(this->getPower()->getPowerupCounter()/30) + "." + to_string(this->getPower()->getPowerupCounter()%30) + " remaining", ofGetWidth()/2-125, 50);
-        } else {
+        } else {                                                                                            // Displays last powerup used
             ofDrawBitmapString(this->getPower()->getName() + ": used", ofGetWidth()/2-125, 50);
         }
     }
@@ -135,7 +133,7 @@ void Player::keyPressed(int key){
             if (this->getHealth() < 3) { health++; }
             break;
         case ' ':
-            if(this->getPowerAvailable()) {
+            if(this->getPowerAvailable()) {                         // If a powerup is available and unused, pressing ' ' will activate it
                 if(this->getPower()->getUsed() == false) {
                     this->getPower()->activate();
                 }
@@ -202,7 +200,7 @@ void Player::checkCollisions(){
         if(collides(entity)){
             if(dynamic_cast<Dot*>(entity) || dynamic_cast<BigDot*>(entity)){
                 entity->remove = true;
-                if(this->getDPU()->getPowerupActive()){
+                if(this->getDPU()->getPowerupActive()){                 // If DPU is active, dots count for twice the points
                     score += 20;
                 } else {
                     score += 10;
@@ -210,7 +208,7 @@ void Player::checkCollisions(){
             }
             if(dynamic_cast<BigDot*>(entity)){
                 em->setKillable(true);
-                if(this->getDPU()->getPowerupActive()){
+                if(this->getDPU()->getPowerupActive()){                 // If DPU is active, big dots count for twice the points
                     score += 20;
                 } else {
                     score +=10;
@@ -223,15 +221,15 @@ void Player::checkCollisions(){
             Ghost* ghost = dynamic_cast<Ghost*>(entity);
             if(ghost->getKillable()){
                 ghost->remove = true;
-                if (dynamic_cast<RandomGhost*>(entity)) {
+                if (dynamic_cast<RandomGhost*>(entity)) {               // If the ghost is a randomghost, respawns it
                     em->setSpawnRandom(true);
-                    if (this->getRPU()->getUsed() == false) {
+                    if (this->getRPU()->getUsed() == false) {           // If RPU is not yet used, makes it available
                         this->setPower(rpu);
                         this->getRPU()->setPowerupAvailable(true);
                     }
-                } else if (dynamic_cast<PeekABooGhost*>(entity)) {
+                } else if (dynamic_cast<PeekABooGhost*>(entity)) {      // If the ghost is a peekabooghost, respawns it
                     em->setSpawnPeekABoo(true);
-                    if (this->getPPU()->getUsed() == false) {
+                    if (this->getPPU()->getUsed() == false) {           // If PPU is not yet used, makes it available
                         this->setPower(ppu);
                         this->getPPU()->setPowerupAvailable(true);
                     }
@@ -241,21 +239,17 @@ void Player::checkCollisions(){
             }
         }
     }
-    if(score >= 1500 && this->getDPU()->getUsed() == false){
+    if(score >= 1500 && this->getDPU()->getUsed() == false){            // Makes DPU available after 1500 points
         this->setPower(dpu);
         this->getDPU()->setPowerupAvailable(true);
     }
 }
 
-void Player::spawnRandom(Player* player) {
-    // Player* player = dynamic_cast<Player*>(p);
-    Entity* randomDot = player->getEm()->entities[rand() % player->getEm()->entities.size()];
-    // while (!dynamic_cast<Dot*>(randomDot) || abs(player->getBounds().getX() - randomDot->getBounds().getX()) <= 100 || abs(player->getBounds().getY() - randomDot->getBounds().getY()) <= 100) {
-    //     randomDot = player->getEm()->entities[rand() % player->getEm()->entities.size()];
-    // }
-    player->setX(randomDot->getBounds().getX());
+void Player::spawnRandom(Player* player) {                                                          // Method for moving pacman to a random dot
+    Entity* randomDot = player->getEm()->entities[rand() % player->getEm()->entities.size()];       // Finds a random dot
+    player->setX(randomDot->getBounds().getX());                                                    // Sets X and Y to the random dot's location
     player->setY(randomDot->getBounds().getY());
-    randomDot->remove = true;
+    randomDot->remove = true;                                                                       // Removes the dot
 }
 
 void Player::die(){
@@ -273,7 +267,7 @@ Powerup* Player::getPower() {
     return this->poweru;
 }
 
-bool Player::getPowerAvailable() {
+bool Player::getPowerAvailable() {                                          // Method for setting Power to the available Powerup, returns true if any powerups are available, false otherwise
     if (this->getRPU()->getPowerupAvailable() == true) {
         this->setPower(rpu);
         return true;
@@ -288,11 +282,11 @@ bool Player::getPowerAvailable() {
     }
 }
 
-void Player::setX(int setX) {
+void Player::setX(int setX) {                           // Sets pacman's X coordinates
     x = setX;
 }
 
-void Player::setY(int setY) {
+void Player::setY(int setY) {                           // Sets pacman's Y coordinates
     y = setY;
 }
 
@@ -301,4 +295,7 @@ Player::~Player(){
     delete walkDown;
     delete walkLeft;
     delete walkRight;
+    delete rpu;
+    delete dpu;
+    delete ppu;
 }

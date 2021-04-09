@@ -1,6 +1,6 @@
 #include "DoublePowerup.h"
 
-DoublePowerup::DoublePowerup() {
+DoublePowerup::DoublePowerup() {    // Sets initially the powerup to be inactive, unavailable, unused, and sets duration
     this->name = "Double";
     this->setPowerupActive(false);
     this->setPowerupAvailable(false);
