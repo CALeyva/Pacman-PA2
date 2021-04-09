@@ -1,6 +1,6 @@
 #include "PeekABooPowerup.h"
 
-PeekABooPowerup::PeekABooPowerup() {
+PeekABooPowerup::PeekABooPowerup() {    // Sets initially the powerup to be inactive, unavailable, unused, and sets duration
     this->name = "PeekABoo";
     this->setPowerupActive(false);
     this->setPowerupAvailable(false);

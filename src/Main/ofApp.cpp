@@ -19,27 +19,27 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	if (currentState != nullptr){
-		currentState->tick();
-		if(currentState->hasFinished()){
-			if(currentState->getNextState() == "Menu"){
+		currentState->tick();												// If the currentState exists, mark a tick
+		if(currentState->hasFinished()){									// Changes state if current state is finished
+			if(currentState->getNextState() == "Menu"){						// Changes to menustate
 				currentState = menuState;
-			}else if(currentState->getNextState() == "Game"){
+			}else if(currentState->getNextState() == "Game"){				// Changes to gamestate
 				if(currentState == pauseState){
-					currentState = gameState;
+					currentState = gameState;								// If game was on pause, sets a boolean to reload the previous gamestate
 					currentState->setWasPaused(true);
 				}
 				currentState = gameState;
-			}else if(currentState->getNextState() == "over"){
-				gameOverState->setScore(gameState->getFinalScore());
+			}else if(currentState->getNextState() == "over"){				// Changes to gameoverstate
+				gameOverState->setScore(gameState->getFinalScore());		// Sets final score on the leaderboard
 				currentState = gameOverState;
-			}else if (currentState->getNextState() == "WinState"){
-				winState->setScore(gameState->getFinalScore());
+			}else if (currentState->getNextState() == "WinState"){			// Changes to winstate
+				winState->setScore(gameState->getFinalScore());				// Sets final score on the leaderboard
 				currentState = winState;
-			}else if (currentState->getNextState() == "PauseState"){
-				currentState = pauseState;
+			}else if (currentState->getNextState() == "PauseState"){		// Changes to pausestate
+				currentState = pauseState;									// Saves current score on the gamestate
 				pauseState->setScore(gameState->getFinalScore());
 			}
-			currentState->reset();
+			currentState->reset();											// Resets state updating properties
 		}
 	}
 		
