@@ -65,6 +65,7 @@ void Ghost::tick(){
 }
 
 void Ghost::render(Entity* player){
+    // If it's not a PeekABooGhost or is, but is 100 pixels or closer to player, render
     if (!dynamic_cast<PeekABooGhost*>(this) || (dynamic_cast<PeekABooGhost*>(this) && (abs(player->getBounds().getX() - this->getBounds().getX()) <= 100 || abs(player->getBounds().getY() - this->getBounds().getY()) <= 100))) {
         if(killable){
             killableAnim->getCurrentFrame().draw(x,y,width,height);

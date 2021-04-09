@@ -10,6 +10,7 @@ private:
         string name;
         int score;
         bool operator<(const Entry& a) const {
+            // Use score for comparison in reverse order (1st place is highest scoring entry)
             return score > a.score; 
         }
     };

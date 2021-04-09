@@ -27,6 +27,7 @@ void MenuState::render(Leaderboard *lb) {
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
+	// Renders entire leaderboard
 	lb->render(-1);
 }
 

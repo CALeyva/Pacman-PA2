@@ -1,7 +1,8 @@
 #include "WinState.h"
 
 WinState::WinState() {
-	startButton = new Button(ofGetWidth()/2 - 50, ofGetHeight()/2, 64, 50, "You Win, Play Again!");
+	// WinState displays menu Pacman animation, with play again button
+	startButton = new Button(ofGetWidth()/2 - 75, ofGetHeight()/2, 64, 50, "You Win, Play Again!");
 	img1.load("images/pacman.png");
 	vector<ofImage> rightAnimframes;
     ofImage temp;
@@ -21,12 +22,14 @@ void WinState::tick() {
 	}
 }
 void WinState::render(Leaderboard *lb) {
+	// Displays score
 	ofDrawBitmapString("Score: " + to_string(score), ofGetWidth()/2, ofGetHeight()/2-300, 50);
 	ofSetBackgroundColor(0, 0, 0);
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
-	lb->render(-1);
+	// Renders top 10 leaderboard entries
+	lb->render(10);
 }
 
 void WinState::keyPressed(int key){

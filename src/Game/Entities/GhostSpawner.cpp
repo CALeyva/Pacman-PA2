@@ -43,12 +43,14 @@ void GhostSpawner::tick(Player* player){
             spawnCounter--;
         }
     }
+    // First tick in which score is 500, spawn RandomGhost
     if (player->getScore() >= 500 && !spawnedRandom) { em->setSpawnRandom(true); }
     if (em->getSpawnRandom()) {
         em->setSpawnRandom(false);
         this->spawnedRandom = true;
         spawnRandomGhost(player, colors[ofRandom(4)]);
     }
+    // First tick in which score is 1000, spawn PeekABooGhost
     if (player->getScore() >= 1000 && !spawnedPAB) { em->setSpawnPeekABoo(true); }
     if (em->getSpawnPeekABoo()) {
         em->setSpawnPeekABoo(false);
@@ -63,6 +65,7 @@ void GhostSpawner::spawnGhost(string color){
 }
 
 void GhostSpawner::spawnRandomGhost(Player* player, string color) {
+    // Choose a random dot and, while its not a big dot and 100 pixels or more from player, then replace dot by RandomGhost
     Entity* randomDot = em->entities[rand() % em->entities.size()];
     while (!dynamic_cast<Dot*>(randomDot) || abs(player->getBounds().getX() - randomDot->getBounds().getX()) <= 100 || abs(player->getBounds().getY() - randomDot->getBounds().getY()) <= 100) {
         randomDot = em->entities[rand() % em->entities.size()];
@@ -78,7 +81,9 @@ void GhostSpawner::spawnPeekABooGhost(Player* player, string color) {
 }
 
 void GhostSpawner::keyPressed(int key){
+    // For testing purposes
     if(key == 'g'){
+        // Spawns a random-colored ghost (of the presets)
         switch (rand() % 4) {
             case 0:
                 spawnGhost("red");

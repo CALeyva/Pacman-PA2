@@ -12,6 +12,7 @@ void PauseState::tick() {
 
 void PauseState::render(Leaderboard *lb) {
     ofDrawBitmapString("Score: " + to_string(score), ofGetWidth()/2, ofGetHeight()/2-300, 50);
+    // Renders entire leaderboard
     lb->render(-1);
 }
 

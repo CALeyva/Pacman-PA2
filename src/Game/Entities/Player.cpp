@@ -132,6 +132,7 @@ void Player::keyPressed(int key){
             die();
             break;
         case 'm':
+            // Adds health up to 3; for testing
             if (this->getHealth() < 3) { health++; }
             break;
         case ' ':
@@ -223,6 +224,7 @@ void Player::checkCollisions(){
             Ghost* ghost = dynamic_cast<Ghost*>(entity);
             if(ghost->getKillable()){
                 ghost->remove = true;
+                // If ghost eaten is a RandomGhost, respawn it
                 if (dynamic_cast<RandomGhost*>(entity)) {
                     em->setSpawnRandom(true);
                     if (this->getRPU()->getUsed() == false) {

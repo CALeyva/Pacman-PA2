@@ -53,6 +53,7 @@ void EntityManager::render(Entity* player){
         BoundBlock->render();
     }
     for(Entity* ghost: ghosts){
+        // Calls Ghost render method
         dynamic_cast<Ghost*>(ghost)->render(player);
     }
 }

@@ -49,6 +49,7 @@ void Map::setGhostSpawner(GhostSpawner* p){
 }
 
 bool Map::dotsLeft() {
+	// Checks if there exists a dot or big dot in map
 	for (Entity* entity: this->entityManager->entities) {
 		if (dynamic_cast<Dot*>(entity) || dynamic_cast<BigDot*>(entity)) return true;
 	}

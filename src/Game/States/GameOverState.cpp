@@ -27,7 +27,8 @@ void GameOverState::render(Leaderboard *lb) {
 	ofSetColor(256, 256, 256);
 	anim->getCurrentFrame().draw(ofGetWidth()/2, ofGetHeight()/2-100, 100, 100);
 	startButton->render();
-	lb->render(-1);
+	// Renders top ten in leaderboard
+	lb->render(10);
 }
 
 void GameOverState::keyPressed(int key){
