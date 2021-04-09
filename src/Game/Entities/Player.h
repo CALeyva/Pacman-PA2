@@ -1,9 +1,10 @@
 #pragma once
 #include "Animation.h"
 #include "EntityManager.h"
-#include "Powerup.h"
+#include "RandomPowerup.h"
+#include "DoublePowerup.h"
 
-class Player: public Entity, Powerup {
+class Player: public Entity {
 
     private:
         int spawnX, spawnY;
@@ -19,6 +20,9 @@ class Player: public Entity, Powerup {
         Animation *walkLeft;
         Animation *walkRight;
         EntityManager* em;
+        Powerup *poweru;
+        RandomPowerup *rpu;
+        DoublePowerup *dpu;
 
     public:
         Player(int, int, int , int, EntityManager*);
@@ -37,4 +41,14 @@ class Player: public Entity, Powerup {
         void setFacing(FACING facing);
         void checkCollisions();
         void die();
+        void setPower(Powerup* power);
+        Powerup* getPower();
+        bool getPowerAvailable();
+        void spawnRandom(Player* player);
+        vector<Powerup*> PowersUnused;
+        EntityManager* getEm() { return this->em; }
+        void setX(int setX);
+        void setY(int setY);
+        RandomPowerup* getRPU() { return this->rpu; }
+        DoublePowerup* getDPU() { return this->dpu; }
 };
