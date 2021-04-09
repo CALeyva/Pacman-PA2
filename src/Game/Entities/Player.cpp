@@ -4,6 +4,7 @@
 #include "BigDot.h"
 // #include "Ghost.h"
 #include "RandomGhost.h"
+#include "PeekABooGhost.h"
 
 Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(x, y, width, height){
     spawnX = x;
@@ -44,31 +45,34 @@ Player::Player(int x, int y, int width, int height, EntityManager* em) : Entity(
 
     rpu = new RandomPowerup();
     dpu = new DoublePowerup();
+    ppu = new PeekABooPowerup();
     this->setPower(rpu);
 }
 
 void Player::tick(){
     if(this->getRPU()->getPowerupActive()) { 
         this->spawnRandom(this);
-        this->getPower()->powerTick();
+        this->getRPU()->powerTick();
     } else if (this->getDPU()->getPowerupActive()) {
-        this->getPower()->powerTick();
+        this->getDPU()->powerTick();
+    } else if (this->getPPU()->getPowerupActive()) {
+        this->getPPU()->powerTick();
     }
     canMove = true;
     checkCollisions();
     if(canMove){
         if(facing == UP){
             y-= speed;
-            walkUp->tick();
+            walkUp->tick();          
         }else if(facing == DOWN){
             y+=speed;
-            walkDown->tick();
+            walkDown->tick();     
         }else if(facing == LEFT){
             x-=speed;
-            walkLeft->tick();
+            walkLeft->tick();     
         }else if(facing == RIGHT){
             x+=speed;
-            walkRight->tick();
+            walkRight->tick();      
         }
     }
 }
@@ -76,20 +80,22 @@ void Player::tick(){
 void Player::render(){
     ofSetColor(256,256,256);
     // ofDrawRectangle(getBounds());
-    if(facing == UP){
-        walkUp->getCurrentFrame().draw(x, y, width, height);
-        
-    }else if(facing == DOWN){
-        walkDown->getCurrentFrame().draw(x, y, width, height);
-    }else if(facing == LEFT){
-        walkLeft->getCurrentFrame().draw(x, y, width, height);
-    }else if(facing == RIGHT){
-        walkRight->getCurrentFrame().draw(x, y, width, height);
+    if(!this->getPPU()->getPowerupActive()) {
+        if(facing == UP){
+            walkUp->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == DOWN){
+            walkDown->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == LEFT){
+            walkLeft->getCurrentFrame().draw(x, y, width, height);
+        }else if(facing == RIGHT){
+            walkRight->getCurrentFrame().draw(x, y, width, height);
+        }
     }
+    
     ofSetColor(256, 0, 0);
     ofDrawBitmapString("Health: ", ofGetWidth()/2 + 100, 50);
 
-    for(unsigned int i=0; i<health; i++){
+    for(int i=0; i<health; i++){
         ofDrawCircle(ofGetWidth()/2 + 25*i +200, 50, 10);
     }
     ofDrawBitmapString("Score:"  + to_string(score), ofGetWidth()/2-250, 50);
@@ -223,6 +229,12 @@ void Player::checkCollisions(){
                         this->setPower(rpu);
                         this->getRPU()->setPowerupAvailable(true);
                     }
+                } else if (dynamic_cast<PeekABooGhost*>(entity)) {
+                    em->setSpawnPeekABoo(true);
+                    if (this->getPPU()->getUsed() == false) {
+                        this->setPower(ppu);
+                        this->getPPU()->setPowerupAvailable(true);
+                    }
                 }
             }else{
                 die();
@@ -267,6 +279,9 @@ bool Player::getPowerAvailable() {
         return true;
     } else if (this->getDPU()->getPowerupAvailable() == true) {
         this->setPower(dpu);
+        return true;
+    } else if (this->getPPU()->getPowerupAvailable() == true) {
+        this->setPower(ppu);
         return true;
     } else {
         return false;

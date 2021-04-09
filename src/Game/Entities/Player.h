@@ -3,6 +3,7 @@
 #include "EntityManager.h"
 #include "RandomPowerup.h"
 #include "DoublePowerup.h"
+#include "PeekABooPowerup.h"
 
 class Player: public Entity {
 
@@ -23,6 +24,7 @@ class Player: public Entity {
         Powerup *poweru;
         RandomPowerup *rpu;
         DoublePowerup *dpu;
+        PeekABooPowerup *ppu;
 
     public:
         Player(int, int, int , int, EntityManager*);
@@ -51,4 +53,5 @@ class Player: public Entity {
         void setY(int setY);
         RandomPowerup* getRPU() { return this->rpu; }
         DoublePowerup* getDPU() { return this->dpu; }
+        PeekABooPowerup* getPPU() { return this->ppu; }
 };
